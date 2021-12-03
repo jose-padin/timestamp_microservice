@@ -14,8 +14,8 @@ let = responseObject = {};
 
 app.get('/api/', (req, res) => {
 	_date = new Date();
-	responseObject['utc'] = _date.toUTCString();
 	responseObject['unix'] = _date.getTime();
+	responseObject['utc'] = _date.toUTCString();
 	return res.status(200).json(responseObject);
 });
 
@@ -25,13 +25,12 @@ app.get('/api/:date', (req, res) => {
 
 		if (date.includes('-')) {
 			_date = new Date(date);
-
-			responseObject['utc'] = _date.toUTCString();
-			responseObject['unix'] = _date.getTime();
 		} else {
-			// timestamp case
 			_date = new Date(parseInt(date));
 		}
+
+		responseObject['unix'] = _date.getTime();
+		responseObject['utc'] = _date.toUTCString();
 	}
 
 	if (!responseObject['unix'] || !responseObject["utc"]) {
