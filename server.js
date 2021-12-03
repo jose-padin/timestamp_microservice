@@ -10,35 +10,35 @@ app.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, 'views/index.html'));
 })
 
+let = responseObject = {};
+
 app.get('/api/', (req, res) => {
 	_date = new Date();
-	return res.status(200).json({utc: _date, unix: Date.parse(_date)})
+	responseObject['utc'] = _date.toUTCString();
+	responseObject['unix'] = _date.getTime();
+	return res.status(200).json(responseObject);
 });
 
 app.get('/api/:date', (req, res) => {
 	if (req.params.date !== "favicon.ico") {
 		date = req.params.date;
 
-		if (date.indexOf('-') !== -1) {
-			try {
-				_date_parsed = date.split('-');
-				month = _date_parsed[1] - 1;
-				_date = new Date(_date_parsed[2], month, _date_parsed[0]);
-				if (_date == 'Invalid Date') {
-					return res.status(400).json({error: 'Invalid Date'});
-				}
-				return res.status(200).json({utc: _date, unix: Date.parse(_date)});
-			} catch (error) {
-				console.log(error);
-				return res.status(400).json({result: 'Wrong date format'});
-			}
-		} else {
+		if (date.includes('-')) {
 			_date = new Date(date);
-			return res.status(200).json({utc: _date, unix: Date.parse(_date)});
+
+			responseObject['utc'] = _date.toUTCString();
+			responseObject['unix'] = _date.getTime();
+		} else {
+			// timestamp case
+			_date = new Date(parseInt(date));
 		}
 	}
 
-	return res.status(400).json({result: 'Wrong date format'});
+	if (!responseObject['unix'] || !responseObject["utc"]) {
+		return res.status(400).json({error: 'Invalid Date'});
+	}
+
+	return res.status(200).json(responseObject);
 })
 
 
