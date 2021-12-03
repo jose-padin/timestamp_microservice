@@ -18,30 +18,25 @@ app.get('/', (req, res) => {
 let = responseObject = {};
 
 app.get('/api/', (req, res) => {
-	_date = new Date();
-	responseObject['unix'] = _date.getTime();
-	responseObject['utc'] = _date.toUTCString();
+	let date = new Date();
+	responseObject['unix'] = date.getTime();
+	responseObject['utc'] = date.toUTCString();
 	return res.status(200).json(responseObject);
 });
 
 app.get('/api/:date', (req, res) => {
 	if (req.params.date !== "favicon.ico") {
-		date = req.params.date;
+		let date_input = req.params.date;
+		let unixFormat = date_input * 1;
+		let date = isNaN(unixFormat) ? new Date(date_input) : new Date(unixFormat);
 
-		if (date.includes('-')) {
-			_date = new Date(date);
-		} else {
-			_date = new Date(parseInt(date));
+		if (date == 'Invalid Date') {
+			return res.status(400).json({error: 'Invalid Date'});
 		}
 
-		responseObject['unix'] = _date.getTime();
-		responseObject['utc'] = _date.toUTCString();
+		responseObject['unix'] = date.getTime();
+		responseObject['utc'] = date.toUTCString();
 	}
-
-	if (!responseObject['unix'] || !responseObject["utc"]) {
-		return res.status(400).json({error: 'Invalid Date'});
-	}
-
 	return res.status(200).json(responseObject);
 })
 
