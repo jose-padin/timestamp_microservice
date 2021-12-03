@@ -12,7 +12,7 @@ app.use(cors({ optionSuccessStatus: 200 })); // some legacy browsers choke on 20
 const port = process.env.PORT || 3005;
 
 app.get('/', (req, res) => {
-	res.sendFile(path.join(__dirname, 'views/index.html'));
+	return res.sendFile(path.join(__dirname, 'views/index.html'));
 })
 
 let = responseObject = {};
